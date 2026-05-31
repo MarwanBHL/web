@@ -5,7 +5,10 @@ import logging
 import math
 from io import BytesIO
 
-from PIL import Image, WebPImagePlugin
+from PIL import (
+    Image,
+    WebPImagePlugin,  # noqa: F401 - force WebP opener registration
+)
 
 _logger = logging.getLogger(__name__)
 
