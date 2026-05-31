@@ -12,6 +12,7 @@ class TestResCompany(common.TransactionCase):
         + "EQVR42mNk+M/wHwAEBgIApD5fRAAAAABJRU5ErkJggg=="
     )
 
+    IMG_INVALID = "dGhpcyBpcyBub3QgYW4gaW1hZ2U="
     IMG_GREEN_WEBP = "UklGRhwAAABXRUJQVlA4TA8AAAAvAAAAAAfQ/4j+ByKi/wEA"
 
     def _test_scss_attachment(self):
