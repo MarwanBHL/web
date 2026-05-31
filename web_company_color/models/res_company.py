@@ -3,7 +3,8 @@
 import base64
 from colorsys import hls_to_rgb, rgb_to_hls
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 
 from ..utils import convert_to_image, image_to_rgb, n_rgb_to_hex
 
@@ -185,7 +186,15 @@ class ResCompany(models.Model):
             ["color_navbar_bg", "color_navbar_bg_hover", "color_navbar_text"]
         )
         if self.logo:
-            _r, _g, _b = image_to_rgb(convert_to_image(self.logo))
+            image = convert_to_image(self.logo)
+            if not image:
+                raise UserError(
+                    _(
+                        "Could not read the company logo. "
+                        "Please upload a valid image file (PNG, JPEG or WebP)."
+                    )
+                )
+            _r, _g, _b = image_to_rgb(image)
             # Make color 10% darker
             _h, _l, _s = rgb_to_hls(_r, _g, _b)
             _l = max(0, _l - 0.1)
