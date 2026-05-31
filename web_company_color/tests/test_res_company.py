@@ -1,5 +1,6 @@
 # Copyright 2019 Alexandre Díaz <dev@redneboa.es>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+from odoo.exceptions import UserError
 from odoo.tests import common
 
 from ..models.res_company import URL_BASE
@@ -10,6 +11,8 @@ class TestResCompany(common.TransactionCase):
         "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUl"
         + "EQVR42mNk+M/wHwAEBgIApD5fRAAAAABJRU5ErkJggg=="
     )
+
+    IMG_GREEN_WEBP = "UklGRhwAAABXRUJQVlA4TA8AAAAvAAAAAAfQ/4j+ByKi/wEA"
 
     def _test_scss_attachment(self):
         num_scss = self.env["ir.attachment"].search_count(
@@ -74,4 +77,18 @@ class TestResCompany(common.TransactionCase):
             "color_navbar_bg",
             company_id.company_colors,
             "Invalid Navbar Background Color",
+        )
+
+    def test_compute_color_invalid_logo(self):
+        company_id = self.env["res.company"].search([], limit=1)
+        company_id.sudo().write({"logo": self.IMG_INVALID})
+        with self.assertRaises(UserError):
+            company_id.button_compute_color()
+
+    def test_change_logo_webp(self):
+        company_id = self.env["res.company"].search([], limit=1)
+        company_id.sudo().write({"logo": self.IMG_GREEN_WEBP})
+        company_id.button_compute_color()
+        self.assertEqual(
+            company_id.color_navbar_bg, "#00ff00", "Invalid Navbar Background Color"
         )
